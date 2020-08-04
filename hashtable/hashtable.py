@@ -99,16 +99,9 @@ class HashTable:
         else:
             self.storage[i] = kv
             self.keys += 1
-
-        # hashed_key = self.djb2(key)
-
-        # idx = hashed_key % len(new_list)
-
-        # if new_list[idx] is not None:
-        #     print(f"COLLISION: you are overwriting at {idx}")
-
-        # new_list[idx] = value
-
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity * 2)
+                
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -145,15 +138,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if self.get_load_factor() > 0.7:
-            old_capacity = self.storage
-            self.capacity = new_capacity
-            self.storage = [None] * new_capacity
-            for slot in old_capacity:
-                while slot in old_capacity:
-                    self.put(slot.key, slot.value)
-                    slot = slot.next
-                self.put(slot.key, slot.value)
+        # if self.get_load_factor() > 0.7:
+        old_capacity = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+        for slot in old_capacity:
+            if slot:
+                current = slot
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
 
 if __name__ == "__main__":
     ht = HashTable(8)
